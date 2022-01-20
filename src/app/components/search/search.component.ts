@@ -1,24 +1,23 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnInit, Output } from '@angular/core';
 import {
-  combineLatest,
+  Subject,
+  BehaviorSubject,
+  Subscription,
   debounceTime,
   distinctUntilChanged,
-  Subject,
-  Subscription,
   switchMap,
+  combineLatest,
   tap,
-  BehaviorSubject,
-  of,
 } from 'rxjs';
-import { City, CitySearchService } from './services/city-search.service';
-import { SearchService } from './services/search.service';
+import { ISearchResult } from 'src/app/model';
+import { City, CitySearchService, SearchService } from 'src/app/services';
 
 @Component({
-  selector: 'app-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css'],
+  selector: 'app-search',
+  templateUrl: './search.component.html',
+  styleUrls: ['./search.component.css'],
 })
-export class AppComponent implements OnInit, OnDestroy {
+export class SearchComponent implements OnInit {
   sort = 'price';
   distance = '3000';
   selectedCity?: City;
@@ -28,6 +27,9 @@ export class AppComponent implements OnInit, OnDestroy {
   sortChange$ = new BehaviorSubject<string>(this.sort);
   distChange$ = new BehaviorSubject<string>(this.distance);
   cityList: City[] = [];
+
+  @Output()
+  searchResult = new Subject<ISearchResult[]>();
 
   private subscriptions: Subscription[] = [];
 
@@ -50,30 +52,27 @@ export class AppComponent implements OnInit, OnDestroy {
     this.subscriptions.push(
       combineLatest([this.clickEvent$, this.sortChange$, this.distChange$])
         .pipe(
-          tap(events => this.selectedCity = events[0]),
+          tap((events) => {
+            this.selectedCity = events[0];
+            this.cityList = [];
+          }),
           debounceTime(500),
           distinctUntilChanged(),
           switchMap((params) => {
-            if (params[0] && params[1] && params[2]) {
-
-              // Not sure if it is CORS related, but getting a 403 error through the link provided,
-              // trying to fix it took a lot of time so I just left the implementation here
-
-              // return this.carSearchService.searchCars(
-              //   params[0],
-              //   params[1],
-              //   params[2]
-              // );
-
-              return of([]);
-            }
-
-            return of([]);
+            return this.carSearchService.searchCars(
+              params[0],
+              params[1],
+              params[2]
+            );
           })
         )
-        .subscribe((result) => {
-          // of course, here we would pass the returned vehicles into a list to display
-          console.log(result)
+        .subscribe({
+          next: (result) => {
+            this.searchResult.next(result);
+          },
+          error: (error) => {
+            console.error(error);
+          },
         })
     );
   }

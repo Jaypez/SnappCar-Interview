@@ -1,0 +1,46 @@
+<div class="search-container flex-column">
+  <h1>Search</h1>
+
+  <div>
+    <input
+      [value]="selectedCity?.name"
+      (keyup)="searchEvent$.next($any($event).target.value)"
+    />
+
+    <div class="city-list" *ngIf="cityList.length">
+      <div *ngFor="let city of cityList" (click)="clickEvent$.next(city)">
+        {{ city.name }}
+      </div>
+    </div>
+  </div>
+
+  <div class="flex-row filters">
+    <div class="flex-column">
+      <label for="distance">Maximum Distance</label>
+      <select
+        name="distance"
+        id="distance"
+        [value]=""
+        (change)="distChange$.next($any($event).target.value)"
+      >
+        <option value="3000">3 KM</option>
+        <option value="5000">5 KM</option>
+        <option value="7000">7 KM</option>
+      </select>
+    </div>
+
+    <div class="flex-column">
+      <label for="sort">Sort By</label>
+      <select
+        name="sort"
+        id="sort"
+        [value]="sort"
+        (change)="sortChange$.next($any($event).target.value)"
+      >
+        <option value="price">Price</option>
+        <option value="recommended">Recommended</option>
+        <option value="distance">Distance</option>
+      </select>
+    </div>
+  </div>
+</div>

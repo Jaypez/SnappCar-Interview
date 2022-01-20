@@ -1,0 +1,11 @@
+<div class="car-list-container">
+  <div class="car-list-item" *ngFor="let item of list">
+    <div class="car-image">
+      <img [src]="item.car.images[0] ?? 'assets/placeholder-image.jpg'">
+    </div>
+    <div class="car-info">
+      <h3>{{ item.car.make }} {{ item.car.model }} - {{ item.car.year }}</h3>
+      <h3 class="price">{{ item.priceInformation.price | currency : item.priceInformation.isoCurrencyCode }}</h3>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,39 @@
+.flex-row {
+  display: flex;
+  flex-direction: row;
+}
+
+.flex-column {
+  display: flex;
+  flex-direction: column;
+}
+
+.search-container {
+  margin: 2rem;
+  max-width: 500px;
+}
+
+.city-list {
+  border: 1px solid grey;
+  margin-top: 0.5rem;
+  border-radius: 0.25rem;
+  box-shadow: 5px 5px 10px grey;
+  position: absolute;
+  background-color: white;
+  max-width: 500px;
+  min-width: 200px;
+}
+
+.city-list div {
+  padding: 0.25rem;
+}
+
+.city-list div:hover {
+  background-color: whitesmoke;
+  cursor: pointer;
+}
+
+.filters {
+  margin-top: 0.4rem;
+  gap: 1rem;
+}
